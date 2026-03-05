@@ -27,6 +27,15 @@ class _HomepageState extends State<Homepage> {
       bottomNavigationBar: MybottomNavbar(
         onTapchange: (index) => navigateBottomBar(index),
       ),
+      appBar: AppBar(
+        backgroundColor: Colors.deepOrangeAccent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      ),
       body: _pages[_selectedIndex],
     );
   }

@@ -19,8 +19,8 @@ class _ShoppageState extends State<Shoppage> {
   
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<CoffeeShop>(
+  Widget build(BuildContext context) { 
+    return Consumer<CoffeeShop>(   
       builder: (context, value, child) => SafeArea(
         child: Padding(
           padding: const EdgeInsetsGeometry.all(25.0),

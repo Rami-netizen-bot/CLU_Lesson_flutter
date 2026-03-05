@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       create: (context) => CoffeeShop(),
       builder: (context, child) => const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Homepage(),
+        home: Splashscreeen(),
       ),
     );
   }
