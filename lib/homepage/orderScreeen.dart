@@ -3,8 +3,6 @@ import 'package:coffee_app/model/coffee_shop.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {}
-
 class OrderScreen extends StatefulWidget {
   final Coffee coffee;
   const OrderScreen({super.key, required this.coffee});
@@ -15,8 +13,7 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   int quantity = 3;
-  String selectedSize = 'S';
-  final List<String> sizes = ['S', 'M', 'L'];
+  String selectedSize = 'S'; // default S selected like screenshot
 
   void increment() => setState(() => quantity++);
   void decrement() {
@@ -28,7 +25,6 @@ class _OrderScreenState extends State<OrderScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
 
-      // Back button
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -52,7 +48,7 @@ class _OrderScreenState extends State<OrderScreen> {
           children: [
             const SizedBox(height: 10),
 
-            // Coffee image
+            // Coffee image — circular white container
             Center(
               child: Container(
                 padding: const EdgeInsets.all(20),
@@ -75,10 +71,9 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 24),
 
-            // Coffee name
+            // Name & price
             Text(
               widget.coffee.name,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -88,10 +83,9 @@ class _OrderScreenState extends State<OrderScreen> {
               "\$${widget.coffee.price}",
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
-
             const SizedBox(height: 36),
 
-            // QUANTITY section
+            // ── QUANTITY ──────────────────────────────────────
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -107,7 +101,7 @@ class _OrderScreenState extends State<OrderScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Minus button
+                // Minus
                 GestureDetector(
                   onTap: decrement,
                   child: Container(
@@ -123,11 +117,10 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.remove),
+                    child: const Icon(Icons.remove, size: 18),
                   ),
                 ),
-
-                // Quantity number
+                // Number
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 28),
                   child: Text(
@@ -138,8 +131,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                   ),
                 ),
-
-                // Plus button
+                // Plus
                 GestureDetector(
                   onTap: increment,
                   child: Container(
@@ -155,15 +147,14 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.add),
+                    child: const Icon(Icons.add, size: 18),
                   ),
                 ),
               ],
             ),
-
             const SizedBox(height: 36),
 
-            // SIZE section
+            // ── SIZE ─────────────────────────────────────────
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -176,23 +167,34 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             ),
             const SizedBox(height: 14),
+
+            // ✅ Row of size buttons — each is a separate widget
             Row(
-              children: sizes.map((size) {
-                final isSelected = size == selectedSize;
+              children: ['S', 'M', 'L'].map((size) {
+                final bool isSelected = selectedSize == size;
                 return GestureDetector(
-                  onTap: () => setState(() => selectedSize = size),
+                  behavior:
+                      HitTestBehavior.opaque, // ✅ ensures full area is tappable
+                  onTap: () {
+                    setState(() {
+                      selectedSize = size; // ✅ triggers rebuild
+                    });
+                  },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOut,
                     margin: const EdgeInsets.only(right: 12),
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
+                      // ✅ selected = brown800 like screenshot, unselected = white
                       color: isSelected ? Colors.brown[800] : Colors.white,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.25),
                           blurRadius: 6,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -200,9 +202,10 @@ class _OrderScreenState extends State<OrderScreen> {
                       child: Text(
                         size,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
+                          // ✅ selected text = white, unselected = dark
+                          color: isSelected ? Colors.white : Colors.black87,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 15,
                         ),
                       ),
                     ),
@@ -213,21 +216,35 @@ class _OrderScreenState extends State<OrderScreen> {
 
             const Spacer(),
 
-            // Add to cart button
+            // ── ADD TO CART BUTTON ────────────────────────────
             GestureDetector(
               onTap: () {
-                // Add to cart
                 Provider.of<CoffeeShop>(
                   context,
                   listen: false,
                 ).addItemTocart(widget.coffee);
 
-                // Show snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("${widget.coffee.name} added to cart!"),
-                    backgroundColor: Colors.brown[800],
+                    content: Text(
+                      "${widget.coffee.name} · Size $selectedSize · x$quantity added!",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    backgroundColor: Colors.white,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 20,
+                    ),
                     duration: const Duration(seconds: 2),
+                    elevation: 6,
                   ),
                 );
 
