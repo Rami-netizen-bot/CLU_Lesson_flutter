@@ -10,20 +10,37 @@ class Shoppage extends StatefulWidget {
   @override
   State<Shoppage> createState() => _ShoppageState();
 }
-
 class _ShoppageState extends State<Shoppage> {
   void addTocart(Coffee coffee) {
     Provider.of<CoffeeShop>(context, listen: false).addItemTocart(coffee);
-    showDialog(context: context, builder: (context)=>AlertDialog(title: Text("Successfully added to card"),));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          "Successfully added to cart",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+        duration: const Duration(seconds: 2),
+        elevation: 6,
+      ),
+    );
   }
-  
 
   @override
-  Widget build(BuildContext context) { 
-    return Consumer<CoffeeShop>(   
+  Widget build(BuildContext context) {
+    return Consumer<CoffeeShop>(
       builder: (context, value, child) => SafeArea(
         child: Padding(
-          padding: const EdgeInsetsGeometry.all(25.0),
+          padding: const EdgeInsets.all(25.0),
           child: Column(
             children: [
               const Text(
@@ -38,7 +55,7 @@ class _ShoppageState extends State<Shoppage> {
                     Coffee eachCoffee = value.coffeeshop[index];
                     return CoffeeTitle(
                       coffee: eachCoffee,
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       onPressed: () => addTocart(eachCoffee),
                     );
                   },
